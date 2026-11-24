@@ -81,3 +81,4 @@ git remote add origin https://github.com/<username>/mct331-smart-home.git
 git push -u origin main
 ```
 Teammates: `git clone <url>`, then `git pull` before working and `git push` after committing.
+
