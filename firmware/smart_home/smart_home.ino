@@ -1,46 +1,46 @@
-/**
- * MCT331s Smart Home - main sketch.
+/*
+ * Smart Home - MCT331s Project 1 (Rev 3.1 shield on Arduino Uno)
  *
- * This file only wires the modules together:
- *   config.h    pins and settings
- *   state.h     shared system state (the "whiteboard")
- *   debounce.*  clean switch reading
- *   security.*  window alarm (MC-38 + toggle + buzzer)
- *   display.*   16x2 I2C LCD
+ * One file per subsystem:
+ *   settings.h          pins and every tunable value
+ *   access.h/.cpp       keypad: door code, security code, lockout, LCD page key
+ *   door.h/.cpp         servo door, auto-close
+ *   security.h/.cpp     window alarm (latched until SECURITY_CODE), PIR exterior light
+ *   lighting.h/.cpp     indoor light: LDR voltage divider or LIGHT button override
+ *   climate.h/.cpp      DHT11 temperature/humidity, knob threshold, fan via L293D
+ *   display.h/.cpp      16x2 I2C LCD status
+ *   buzzer.h/.cpp       key beeps and alarm sound
  *
- * Every module has begin() (runs once) and update() (runs every loop, never blocks).
- * To add a system (door, lighting, climate): create door.h/.cpp with doorBegin()/doorUpdate(),
- * add its fields to state.h, and call it below.
- *
- * Library: LiquidCrystal I2C (Frank de Brabander) - install from the Library Manager.
+ * Keypad uses D0/D1: unplug the keypad while uploading. Serial is not used.
+ * Libraries: Servo (built-in), Keypad (Mark Stanley), LiquidCrystal I2C (Frank de Brabander),
+ *            DHTlib (Rob Tillaart, as in Lab 4).
  */
-#include "config.h"
-#include "state.h"
+#include "settings.h"
+#include "buzzer.h"
+#include "door.h"
 #include "security.h"
+#include "lighting.h"
+#include "climate.h"
+#include "access.h"
 #include "display.h"
 
-SystemState sys;   // the one shared state
-
-/**
- * Runs once at power-on: start serial and every module.
- * @return void
- */
+/** Initialises every subsystem; the door starts closed and security armed (ALWAYS_ARMED). */
 void setup() {
-  Serial.begin(SERIAL_BAUD);
-  securityBegin();
-  displayBegin();
-  delay(1500);     // keep the welcome screen visible (the only delay in the program)
-  Serial.println(F("System ready"));
+  buzzerInit();
+  lightingInit();
+  climateInit();
+  securityInit();
+  doorInit();
+  displayInit();
 }
 
-/**
- * Runs forever: each module reads its inputs and updates its outputs, then the LCD shows the result.
- * @return void
- */
+/** Runs every subsystem once per pass; nothing here blocks. */
 void loop() {
-  securityUpdate();
-  // doorUpdate();      // next
-  // lightingUpdate();  // next
-  // climateUpdate();   // next
-  displayUpdate();
+  updateAccess();
+  updateDoor();
+  updateSecurity();
+  updateLighting();
+  updateClimate();
+  updateBuzzer(isAlarmActive());
+  updateDisplay();
 }

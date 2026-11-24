@@ -1,19 +1,12 @@
 /**
- * display.h - 16x2 I2C LCD: shows the state of every module.
- *
- * Priority: alarm screen > status screen.
+ * display.h - LCD feedback (project function 5), 16x2 LCD with I2C adapter (Lab 4).
+ * Line 1: alarm, temporary message, lockout, or door/security status.
+ * Line 2: typed code, or status pages (temperature/humidity, threshold/fan, lamp/LDR, PIR).
  */
 #pragma once
+#include <Arduino.h>
 
-/**
- * Start the LCD, turn on the backlight and show the welcome screen.
- * @return void
- */
-void displayBegin();
-
-/**
- * Redraw the screen from the shared state (only changed lines are rewritten).
- * Call it every loop; it never blocks.
- * @return void
- */
-void displayUpdate();
+void displayInit();
+void showMessage(const char *text);
+void nextPageManual();
+void updateDisplay();

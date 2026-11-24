@@ -1,0 +1,15 @@
+%TF.GenerationSoftware,MCT331s-SmartHome,ShieldGen,3.1*%
+%TF.FileFunction,Profile,NP*%
+%TF.FilePolarity,Positive*%
+%FSLAX46Y46*%
+%MOMM*%
+%LPD*%
+%ADD10C,0.1000*%
+G01*
+D10*
+X0Y0D02*
+X68580000Y0D01*
+X68580000Y53340000D01*
+X0Y53340000D01*
+X0Y0D01*
+M02*

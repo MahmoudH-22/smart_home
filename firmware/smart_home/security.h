@@ -1,21 +1,17 @@
 /**
- * security.h - window alarm: MC-38 sensor + ARM toggle + buzzer.
- *
- * Rule: alarmOn = armed AND windowOpen.
- *   window opens while armed -> buzzer ON (continuous) + "ALERT:WINDOW_OPEN" sent once
- *   window closes            -> buzzer OFF at once
+ * security.h - security system (project function 2): window reed and PIR inputs,
+ * buzzer and exterior LEDs as alerts (Lab 3 style multi-level alerts).
+ * Window opening while armed latches the alarm until SECURITY_CODE is entered.
  */
 #pragma once
+#include <Arduino.h>
 
-/**
- * Set up the sensor, toggle and buzzer pins.
- * @return void
- */
-void securityBegin();
-
-/**
- * Read the inputs, update sys.armed / sys.windowOpen / sys.alarmOn and drive the buzzer.
- * Call it every loop; it never blocks.
- * @return void
- */
-void securityUpdate();
+void securityInit();
+void updateSecurity();
+void setArmed(bool armed);
+bool muteAlarm();
+bool isArmed();
+bool isAlarmActive();
+bool isPirMotion();
+bool isExtLightOn();
+unsigned long pirMotionStartedAt();
